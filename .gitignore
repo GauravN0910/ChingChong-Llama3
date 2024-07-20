@@ -2,3 +2,7 @@
 fda_dataset/
 .env
 output.json
+.chainlit/
+__pycache__/
+chainlit.md
+.files/

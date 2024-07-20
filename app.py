@@ -3,6 +3,8 @@ from llama_index.core import VectorStoreIndex, ServiceContext, StorageContext
 from llama_index.llms.together import TogetherLLM
 from llama_index.embeddings.together import TogetherEmbedding
 from llama_index.core import SimpleDirectoryReader
+from llama_index.readers.json import JSONReader
+
 # from llama_index.vector_stores.milvus import MilvusVectorStore
 
 # import openai
@@ -21,9 +23,8 @@ embedded_model = TogetherEmbedding(
 )
 
 # vector_store = MilvusVectorStore(
-#     uri="./milvus_demo.db", dim=1536, overwrite=True
+#     uri="./milvus_demo.db", dim=768, overwrite=True
 # )
-
 
 # Initialize the chat message history
 if "messages" not in st.session_state.keys():
@@ -34,9 +35,26 @@ if "messages" not in st.session_state.keys():
 @st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="Loading OTC Docs"):
-        reader = SimpleDirectoryReader(input_files=["./output_min.json"]).load_data()
+
+        # Initialize JSONReader
+        reader = JSONReader(
+            # The number of levels to go back in the JSON tree. Set to 0 to traverse all levels. Default is None.
+            levels_back=0,
+            # The maximum number of characters a JSON fragment would be collapsed in the output. Default is None.
+            # collapse_length="<Collapse Length>",
+            # If True, ensures that the output is ASCII-encoded. Default is False.
+            # ensure_ascii="<Ensure ASCII>",
+            # If True, indicates that the file is in JSONL (JSON Lines) format. Default is False.
+            # is_jsonl="<Is JSONL>",
+            # If True, removes lines containing only formatting from the output. Default is True.
+            # clean_json="<Clean JSON>",
+        )
+        docs = reader.load_data(input_file='output_min.json', extra_info={})
+        print(docs)
+
+        # reader = SimpleDirectoryReader(input_files=["./output_min.json"]).load_data()
         # reader = SimpleDirectoryReader("./data/paul_graham").load_data()
-        docs = reader
+        # docs = reader
         
         service_context = ServiceContext.from_defaults(embed_model=embedded_model,llm=open_llm)
         # storage_context = StorageContext.from_defaults(vector_store=vector_store)
@@ -46,6 +64,7 @@ def load_data():
         return index
 
 index = load_data()
+
 chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 
 # Prompt for user input and save to chat history

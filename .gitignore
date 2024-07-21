@@ -6,3 +6,5 @@ output.json
 __pycache__/
 chainlit.md
 .files/
+medicine_index/
+chat_memory.json

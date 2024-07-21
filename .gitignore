@@ -2,3 +2,9 @@
 fda_dataset/
 .env
 output.json
+.chainlit/
+__pycache__/
+chainlit.md
+.files/
+medicine_index/
+chat_memory.json

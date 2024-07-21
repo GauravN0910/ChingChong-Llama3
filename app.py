@@ -1,11 +1,8 @@
-from llama_index.core.storage.chat_store import SimpleChatStore
-from llama_index.core.chat_engine import SimpleChatEngine
-from llama_index.core.memory import ChatMemoryBuffer
+
 from llama_index.core import Settings, VectorStoreIndex, StorageContext, SimpleDirectoryReader, Document, ServiceContext
 from llama_index.llms.together import TogetherLLM
 from llama_index.embeddings.together import TogetherEmbedding
 from llama_index.vector_stores.milvus import MilvusVectorStore
-from llama_index.readers.web import SimpleWebPageReader
 from llama_index.core import load_index_from_storage
 from llama_index.core.callbacks.base import CallbackManager
 from prompts import OTC_ASSISTANT_TEMPLATE

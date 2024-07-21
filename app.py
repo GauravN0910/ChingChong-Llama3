@@ -19,13 +19,19 @@ async def factory():
     llm = TogetherLLM(
         model="meta-llama/Meta-Llama-3-70B-Instruct-Turbo", api_key="dae9b33beef8cc57bc9475d53519e9e70037e6820b8c2d54b0b2f349e11101b0"
     )
-    
-    storage_context = StorageContext.from_defaults(persist_dir="./medicine_index")
+
     service_context = ServiceContext.from_defaults(embed_model=embed_model, llm=llm,
                         callback_manager=CallbackManager([cl.LlamaIndexCallbackHandler()]),
     )
-    index = load_index_from_storage(storage_context, service_context=service_context)
 
+    try:
+        # rebuild storage context
+        storage_context = StorageContext.from_defaults(persist_dir="./medicine_index",service_context=service_context)
+        # load index
+        index = load_index_from_storage(storage_context, service_context=service_context)
+    except:
+        index = VectorStoreIndex.from_documents(documents,service_context=service_context)
+        index.storage_context.persist("medicine_index")
 
     query_engine = index.as_query_engine(
         service_context=service_context,

@@ -19,6 +19,7 @@ embed_model = TogetherEmbedding(
 documents = SimpleDirectoryReader(input_dir="./data", recursive=True).load_data()
 vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=768, overwrite=True)
 storage_context = StorageContext.from_defaults(vector_store=vector_store)
+index = VectorStoreIndex.from_documents(documents=documents)
 
 Settings.embed_model = embed_model
 Settings.llm = llm
